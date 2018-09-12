@@ -3,3 +3,10 @@
 //Problem Set Three: Order Stats Functions
 //September 17th, 2017
 //Pledged
+
+template<typename T,typename C,typename S>
+T randomOrderStat(T begin, T end,C lt,S index);
+
+
+template<typename T,typename C,typename S>
+T linearOrderStat(T begin, T end,C lt,S index);

@@ -3,3 +3,6 @@
 //Problem Set Three: Bucket Sort
 //September 17th, 2017
 //Pledged
+
+template<typename T,typename K>
+void bucketSort(T begin,T end,K keyFunc);
