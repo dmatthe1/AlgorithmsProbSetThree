@@ -32,11 +32,15 @@ int getDigit(int num, int place) {
 template<typename T, typename K>
 void radixSort(T begin, T end, K keyFunc) {
   //initializations for output and max digit count
-  vector<T> output (end - begin);
-  int max = digitCount(keyFunc(*begin));
+  vector<typename std::iterator_traits<T>::value_type> output (end - begin);
+  int max = 0;
+	for (auto iter = begin; iter != end; iter++) {
+		if (keyFunc(*iter) > max) {max = keyFunc(*iter);}
+	}
+  max = digitCount(max);
 
   //looping through until all digits are accounted for
-  for (int place = 0; place <= max; place++) {
+  for (int place = 1; place <= max; place++) {
     //initialize count vector of size 10
     vector<int> count (10, 0);
 
@@ -46,68 +50,21 @@ void radixSort(T begin, T end, K keyFunc) {
     }
 
     //sum up the count vector contents
-    for (int i = 1; i < count.size() - 1; i++) {
+    for (int i = 1; i < count.size(); i++) {
       count[i] = count[i] + count[i - 1];
     }
 
     //update output vector
-    for (auto iter = end; iter >= begin; iter--) {
-      output[count[getDigit(keyFunc(*iter), place)]--] = iter;
+    for (auto iter = end - 1; iter >= begin; iter--) {
+      int dig = getDigit(keyFunc(*iter), place);
+      count[dig]--;
+      int index = count[dig];
+      output[index] = *(iter);
     }
 
     //update original vector with sorted output data
     for (int count = 0; count < (end - begin); count++) {
-      *(begin + count) = *(output[count]);
+      *(begin + count) = output[count];
     }
   }
 }
-
-/**
-  //works for anything that you can break into digits
-	int max = 0;
-	T itr = begin;
-	while (itr < end) {
-		if (keyFunc(*itr) > max) { max = keyFunc(*itr); }
-		itr++;
-	}
-	int numDigit = 0;
-	int keytemp = max;
-	while (keytemp >= 1)
-		keytemp /= 10;
-	numDigit ++;
-
-	for (int i = 0; i < numDigit; i++) {
-		int counts[10];
-		T itr = begin;
-		const int n = (end - begin);
-		T newOrder[n];
-
-		//check last sigfig
-		while (itr < end) {
-			int key = (int)(keyFunc(*itr) / pow(10, i)) % 10;
-			counts[key]++;
-			itr++;
-		}
-
-		//calculate start indices
-		for (int j = 1; j < 10; j++)
-			count[j] += count[j - 1];
-
-		//place in order in newOrder
-		itr = end-1;
-		while (itr > begin) {
-			int key = (int) (keyFunc(*itr) / pow(10, i)) % 10;
-			newOrder[count[key]] = itr;
-			count[key]--;
-			itr--;
-		}
-
-		itr = begin;
-		for (int j = 0; j < newOrder.length(); j++) {
-			itr = newOrder[j];
-			itr++;
-		}
-	}
-//Starting with the least significant digit, sort the telements on that digit using a stable sort. Then go through the digits
-}
-**/
